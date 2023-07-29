@@ -3,7 +3,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type NewEntry = Database["public"]["Tables"]["species"]["Insert"];
 
-export async function addEntry(input: NewEntry) {
+export async function addSpecies(input: NewEntry) {
   const supabase = createClientComponentClient<Database>();
   return await supabase.from("species").insert([
     {

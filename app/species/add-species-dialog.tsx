@@ -21,7 +21,7 @@ import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { kingdoms, speciesSchema } from "../../lib/types";
-import { addEntry } from "../mutations";
+import { addSpecies } from "../mutations";
 
 type FormData = z.infer<typeof speciesSchema>;
 
@@ -40,7 +40,7 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
   });
 
   const onSubmit = async (input: FormData) => {
-    const { error } = await addEntry({ ...input, author: userId });
+    const { error } = await addSpecies({ ...input, author: userId });
 
     if (error) {
       return toast({
