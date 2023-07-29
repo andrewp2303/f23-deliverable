@@ -34,7 +34,7 @@
 
 ## Introduction
 
-This project is a versatile starter project for T4SG web development projects. The stack and development tools have been chosen carefully to enable teams to develop rapidly on a variety of projects and build apps that are more easily maintainable by clients post-handoff.
+Welcome to *Biodiversity Hub*, the webapp for T4SG's Fall 2023 applications!
 
 The project uses Next.js, a React-based framework with significant optimizations. The frontend uses `shadcn/ui`, an open-source library of UI components that are built with Radix primitives and styled with Tailwind CSS. The backend uses Supabase, an open-source Firebase alternative. The entire stack is written in Typescript to provide comprehensive typesafety across both frontend and backend.
 
@@ -42,12 +42,14 @@ The project uses Next.js, a React-based framework with significant optimizations
 
 ## Setup
 
+To set up the starter code for *Biodiversity Hub*, follow these instructions in order.
+
 #### Clone repository
 
 `cd` into a desired destination folder, then clone the repo (preferably using SSH):
 
 ```shell
-git clone git@github.com:hcs-t4sg/starter-project-2023-v2.git
+git clone git@github.com:hcs-t4sg/f23-deliverable.git
 ```
 
 #### Package installation
@@ -56,7 +58,7 @@ git clone git@github.com:hcs-t4sg/starter-project-2023-v2.git
 
    ```bash
    # Navigate into the project directory
-   cd starter-project-2023-v2.git
+   cd f23-deliverable
 
    # Open in VSCode
    code .
@@ -75,10 +77,10 @@ git clone git@github.com:hcs-t4sg/starter-project-2023-v2.git
 
   ```bash
   added 414 packages, and audited 415 packages in 13s
-
+  
   149 packages are looking for funding
   run `npm fund` for details
-
+  
   found 0 vulnerabilities
   ```
 
@@ -105,7 +107,33 @@ git clone git@github.com:hcs-t4sg/starter-project-2023-v2.git
    SECRET_SUPABASE_CONNECTION_STRING="postgresql://postgres:YourDatabasePasswordHere@db.abcdefghijklmnopqrst.supabase.co:5432/postgres"
    ```
 
-   You should not share these keys publically, especially the `SECRET_SUPABASE_CONNECTION_STRING`. Note that this project uses a package from the popular [T3 stack](https://create.t3.gg/) to validate and provide typesafety to environment variables in `env.mjs` (more on this below). When using these environment variables in your code, you can import them from `env.mjs`. `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are used in the codebase itself and are thus included in this file. `SECRET_SUPABASE_CONNECTION_STRING` is used only in a helper script in `package.json` and not in the app itself, so it doesn't need to be validated.
+   You should not share these keys publically, especially the `SECRET_SUPABASE_CONNECTION_STRING`.
+
+#### Supabase Database Setup
+
+1. In your Supabase project dashboard, navigate to `SQL Editor` in the left sidebar, then click `(+) New Query` > `New blank query`. If you wish, you can rename the query from "Untitled Query" to something else by clicking the dropdown in the left sidebar.
+2. In your starter code, there is a `setup.sql` file containing a SQL script that will set up the database for you. Copy the entire contents of the file and paste it into your new query.
+3. Run the query with the button in the bottom right or by pressing `cmd` + `return`. In the results panel, you should see the message `Success. No rows returned`. If you're having issues with this, contact Eileen and Matthew (the directors of engineering)!
+
+#### Run the webapp and log in
+
+1. The below command will run the webapp locally so that you can view and test your code when developing. Go ahead and run it:
+   ```bash
+   # Start the webapp in development mode (usually what you do in development). Exit with Ctrl + C
+   npm run dev
+   ```
+
+2. Now you need to log into the webapp with the `Log In` button in the top right. Enter an email to receive a magic link (at that email) that you can use to log in. (Make sure you open the link in the same browser from which you initiated the login). Accounts are associated with email, so if you ever need to log back in just enter the same email. 
+
+3. Once you log in, go to your Supabase database and confirm that the `profiles` table has a row corresponding to your email.
+
+#### Seed species data
+
+We gave you some example species data to seed your database! Follow similar steps as in the "Supabase Database Setup" section to set it up. Make sure you've **confirmed that the `profiles` table is non-empty** (see previous step).
+
+1. In your Supabase project dashboard, navigate to `SQL Editor` in the left sidebar, then click `(+) New Query` > `New blank query`. If you wish, you can rename the query from "Untitled Query" to something else by clicking the dropdown in the left sidebar.
+2. In your starter code, there is a `seed.sql` file containing a SQL script that will set up the database for you. Copy the entire contents of the file and paste it into your new query.
+3. Run the query with the button in the bottom right or by pressing `cmd` + `return`. In the results panel, you should see the message `Success. No rows returned`. If you're having issues with this, contact Eileen and Matthew (the directors of engineering)!
 
 #### Supabase CLI Setup
 
@@ -113,28 +141,17 @@ git clone git@github.com:hcs-t4sg/starter-project-2023-v2.git
 
 2. If you've done `npm install`, the CLI should already be installed. You can test it by running `npx supabase`, which will give you a version (`Supabase CLI 1.64.8`) and a list of commands.
 
-3. We preconfigured a command (in `package.json`) for you to easily generate type definitions in `lib-schema.ts` from your remote Supabase database schema. If you've created tables in Supabase, you can test this command now. Otherwise, make sure to run it frequently in development whenever you edit your database schema.
+3. We preconfigured a command (in `package.json`) for you to easily generate type definitions in `lib/schema.ts` from your remote Supabase database schema. These type definitions are used throughout the codebase to make sure you're interacting with the database correctly. You don't need to run this command now, because we've already set up the database schema for you.  However, make sure to run it if you edit your database schema (adding columns, tables, etc).
 
    ```ts
    // Introspects your remote Supabase database and generates types in lib/schema.ts
    npm run types
    ```
 
-   > Notes:
+   > Note: You need to have `SECRET_SUPABASE_CONNECTION_STRING` configured in `.env` in order for the above command to work.
    >
-   > - You need to have `SECRET_SUPABASE_CONNECTION_STRING` configured in `.env` in order for the above command to work.
-   > - If you want to generate type definitions for a local Supabase project, you can run the full version of the command (read more about it [here](https://supabase.com/docs/guides/api/rest/generating-types)) or edit the `npm` script in `package.json`.
 
 More instructions on troubleshooting potential errors are below.
-
-#### Run the webapp
-
-You can run the webapp with the following terminal command:
-
-```bash
-# Start the webapp in development mode (usually what you do in development). Exit with Ctrl + C
-npm run dev
-```
 
 ---
 
@@ -153,7 +170,7 @@ Typescript applies type inference to your files automatically, but you can also 
 npx tsc --noEmit
 ```
 
-A quick tip on coding with Typescript: When fixing type errors, you should avoid using [type assertions](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule) (with `as`) and the [`any` type](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule) **as much as possible**. These functionalities are escape hatches built into Typescript to allow you to avoid type-checking, but they don't actually solve the underlying problem of a type error! Simply ignoring the problem by avoiding type-checking will only make future bugs much more difficult to fix. Personally, out of all the type errors I've resolved in Typescript, I've only had one situation where the `as` keyword was necessary; every other time, the type error exposed an important error/oversight in my code.
+A quick tip on coding with Typescript: When fixing type errors, you should avoid using [type assertions](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule) (with `as`) and the [`any` type](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule) **as much as possible**. These functionalities are escape hatches built into Typescript to allow you to avoid type-checking, but they don't actually solve the underlying problem of a type error! Simply ignoring the problem by avoiding type-checking will only make future bugs much more difficult to fix. Most of the time, a type error exposes an important error/oversight in your code.
 
 Finally, note that type definitions for many `npm` packages are [maintained by the Typescript community](https://github.com/DefinitelyTyped/DefinitelyTyped) and may be found with the `@types/` prefix on [`npm`](https://www.npmjs.com), if they're not already included in the package itself (generally they are). Several of the config files in the project (ex: `.prettierrc.cjs`) manually import type definitions, but you generally will not need to worry about such syntax in your actual source code.
 
@@ -204,7 +221,7 @@ npm start
 
 Note that React 18 introduced server components, which form a new paradigm for conceptualizing and constructing webapps. This project uses the Next.js `app/` router, which was introduced in Next.js 13 and uses React server components. Server components are very new and can take a while to wrap one's head around (especially for people already accustomed to React's old "mental model"). However, React and Next.js development is shifting towards this new paradigm, just like how we shifted from using class components and lifecycle methods to using functional components and hooks in React a few years ago. So we at T4SG Eng want to move along with the rest of the developer community and ensure that we're learning/practicing the most relevant skills!
 
-If you are new to React, check out the React documentation first before touching Next.js. The Next.js docs have a great [React Essentials](https://nextjs.org/docs/getting-started/react-essentials) section. When browsing documentation or looking at tutorials for Next.js, try to first look for examples explicitly referencing Next 13 or the `app` router, not the `pages` router (which is the traditional way of building Next.js webapps). However, this **does not** mean that `pages`-related content is obsolete! The `app` router uses a balance of server components and client components (more on this in the docs), and client components have the same functionality as components in the `pages` router have always had.
+If you are new to React, check out the React documentation first before touching Next.js. The Next.js docs have a great [React Essentials](https://nextjs.org/docs/getting-started/react-essentials) section. When browsing documentation or looking at tutorials for Next.js, try to first look for examples explicitly referencing Next 13 or the `app` router, not the `pages` router (which is the older way of building Next.js webapps).
 
 > **More references**
 >
