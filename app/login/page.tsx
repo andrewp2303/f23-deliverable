@@ -2,7 +2,7 @@ import { type Database } from "@/lib/schema";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { UserAuthForm } from "./user-auth-form";
+import UserAuthForm from "./user-auth-form";
 
 export default async function LoginPage() {
   // Create supabase server component client and obtain user session from stored cookie

@@ -23,7 +23,7 @@ const userAuthSchema = z.object({
 // Use Zod to extract inferred type from schema
 type FormData = z.infer<typeof userAuthSchema>;
 
-export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export default function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   // Create form with react-hook-form and use Zod schema to validate the form submission (with resolver)
   const {
     register,
