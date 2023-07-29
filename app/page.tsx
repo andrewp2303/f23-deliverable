@@ -14,7 +14,7 @@ export default function Home() {
         biodiversity across the globe. Users sign into the app and add cards that contain data on the species&apos;
         name, geographic location, population, and more.
       </TypographyP>
-      <TypographyP>To see all species, log in in the top right!</TypographyP>
+      <TypographyP>To see the species page, log in in the top right!</TypographyP>
       <Separator className="my-4" />
       <TypographyP>
         Biodiversity Hub was created as an example webapp for T4SG&apos;s Fall 2023 applications. Check out the

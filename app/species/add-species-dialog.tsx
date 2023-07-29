@@ -59,14 +59,14 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
       <DialogTrigger asChild>
         <Button variant="secondary" onClick={() => setOpen(true)}>
           <Icons.add className="mr-3 h-5 w-5" />
-          Add Entry
+          Add Species
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add Species</DialogTitle>
           <DialogDescription>
-            Add a new species here. Click &quot;Add Entry&quot; below when you&apos;re done.
+            Add a new species here. Click &quot;Add Species&quot; below when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -178,7 +178,7 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
               />
               <div className="flex">
                 <Button type="submit" className="ml-1 mr-1 flex-auto">
-                  Add Entry
+                  Add Species
                 </Button>
                 <Button
                   type="button"

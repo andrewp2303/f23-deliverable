@@ -1,3 +1,4 @@
+import { Separator } from "@/components/ui/separator";
 import { TypographyH2 } from "@/components/ui/typography";
 import { type Database } from "@/lib/schema";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -23,9 +24,10 @@ export default async function Deliverable() {
   return (
     <>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-        <TypographyH2>Species</TypographyH2>
+        <TypographyH2>Species List</TypographyH2>
         <AddSpeciesDialog key={new Date().getTime()} userId={session.user.id} />
       </div>
+      <Separator className="my-4" />
       <div className="flex flex-wrap justify-center">
         {species && species.map((species) => <SpeciesCard key={species.id} {...species} />)}
       </div>
