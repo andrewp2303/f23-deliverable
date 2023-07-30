@@ -6,8 +6,10 @@
     - [Clone repository](#clone-repository)
     - [Package installation](#package-installation)
     - [Supabase Connection Setup](#supabase-connection-setup)
+    - [Supabase Database Setup](#supabase-database-setup)
+    - [Run the webapp and log in](#run-the-webapp-and-log-in)
+    - [Seed species data](#seed-species-data)
     - [Supabase CLI Setup](#supabase-cli-setup)
-    - [Run the webapp](#run-the-webapp)
   - [Stack references](#stack-references)
     - [Typescript](#typescript)
     - [Components and Styling: `shadcn/ui`, Radix, and Tailwind CSS](#components-and-styling-shadcnui-radix-and-tailwind-css)
@@ -34,7 +36,7 @@
 
 ## Introduction
 
-Welcome to *Biodiversity Hub*, the webapp for T4SG's Fall 2023 applications!
+Welcome to _Biodiversity Hub_, the webapp for T4SG's Fall 2023 applications!
 
 The project uses Next.js, a React-based framework with significant optimizations. The frontend uses `shadcn/ui`, an open-source library of UI components that are built with Radix primitives and styled with Tailwind CSS. The backend uses Supabase, an open-source Firebase alternative. The entire stack is written in Typescript to provide comprehensive typesafety across both frontend and backend.
 
@@ -42,7 +44,7 @@ The project uses Next.js, a React-based framework with significant optimizations
 
 ## Setup
 
-To set up the starter code for *Biodiversity Hub*, follow these instructions in order.
+To set up the starter code for _Biodiversity Hub_, follow these instructions in order.
 
 #### Clone repository
 
@@ -63,7 +65,7 @@ git clone git@github.com:hcs-t4sg/f23-deliverable.git
    # Open in VSCode
    code .
 
-   # If the second error gives you an error, you probably don't have the VS Code 'code' keyword added to your PATH variable. Follow this tutorial:
+   # If the second command gives you an error, you probably don't have the VS Code 'code' keyword added to your PATH variable. Follow this tutorial:
    # https://www.freecodecamp.org/news/how-to-open-visual-studio-code-from-your-terminal/#:~:text=Once%20your%20terminal%20is%20open,Then%20hit%20enter%20.&text=Once%20you%20hit%20enter%20%2C%20VS%20Code%20will%20now%20open.
    ```
 
@@ -77,10 +79,10 @@ git clone git@github.com:hcs-t4sg/f23-deliverable.git
 
   ```bash
   added 414 packages, and audited 415 packages in 13s
-  
+
   149 packages are looking for funding
   run `npm fund` for details
-  
+
   found 0 vulnerabilities
   ```
 
@@ -118,12 +120,13 @@ git clone git@github.com:hcs-t4sg/f23-deliverable.git
 #### Run the webapp and log in
 
 1. The below command will run the webapp locally so that you can view and test your code when developing. Go ahead and run it:
+
    ```bash
    # Start the webapp in development mode (usually what you do in development). Exit with Ctrl + C
    npm run dev
    ```
 
-2. Now you need to log into the webapp with the `Log In` button in the top right. Enter an email to receive a magic link (at that email) that you can use to log in. (Make sure you open the link in the same browser from which you initiated the login). Accounts are associated with email, so if you ever need to log back in just enter the same email. 
+2. Now you need to log into the webapp with the `Log In` button in the top right. Enter an email to receive a magic link (at that email) that you can use to log in. (Make sure you open the link in the same browser from which you initiated the login). Accounts are associated with email, so if you ever need to log back in just enter the same email.
 
 3. Once you log in, go to your Supabase database and confirm that the `profiles` table has a row corresponding to your email.
 
@@ -141,7 +144,7 @@ We gave you some example species data to seed your database! Follow similar step
 
 2. If you've done `npm install`, the CLI should already be installed. You can test it by running `npx supabase`, which will give you a version (`Supabase CLI 1.64.8`) and a list of commands.
 
-3. We preconfigured a command (in `package.json`) for you to easily generate type definitions in `lib/schema.ts` from your remote Supabase database schema. These type definitions are used throughout the codebase to make sure you're interacting with the database correctly. You don't need to run this command now, because we've already set up the database schema for you.  However, make sure to run it if you edit your database schema (adding columns, tables, etc).
+3. We preconfigured a command (in `package.json`) for you to easily generate type definitions in `lib/schema.ts` from your remote Supabase database schema. These type definitions are used throughout the codebase to make sure you're interacting with the database correctly. You don't need to run this command now, because we've already set up the database schema for you. However, make sure to run it if you edit your database schema (adding columns, tables, etc).
 
    ```ts
    // Introspects your remote Supabase database and generates types in lib/schema.ts
@@ -149,7 +152,6 @@ We gave you some example species data to seed your database! Follow similar step
    ```
 
    > Note: You need to have `SECRET_SUPABASE_CONNECTION_STRING` configured in `.env` in order for the above command to work.
-   >
 
 More instructions on troubleshooting potential errors are below.
 
