@@ -14,7 +14,6 @@ function SettingsError({ message }: { message: string }) {
   );
 }
 
-// * Note for Ashley: This is a server component. You don't need to extract data fetching into get-profile.ts, clearer to read + understand if you just do Supabase client stuff in here.
 export default async function Settings() {
   const supabase = createServerComponentClient<Database>({ cookies });
   const {
