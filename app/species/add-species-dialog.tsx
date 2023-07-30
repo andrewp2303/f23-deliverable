@@ -15,13 +15,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
+import { type Database } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 import { kingdoms, speciesSchema } from "../../lib/types";
-import { addSpecies } from "../mutations";
 
 type FormData = z.infer<typeof speciesSchema>;
 
@@ -40,7 +41,18 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
   });
 
   const onSubmit = async (input: FormData) => {
-    const { error } = await addSpecies({ ...input, author: userId });
+    const supabase = createClientComponentClient<Database>();
+    const { error } = await supabase.from("species").insert([
+      {
+        author: userId,
+        common_name: input.common_name,
+        description: input.description,
+        kingdom: input.kingdom,
+        scientific_name: input.scientific_name,
+        total_population: input.total_population,
+        image: input.image,
+      },
+    ]);
 
     if (error) {
       return toast({
