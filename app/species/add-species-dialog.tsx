@@ -109,7 +109,7 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
           Add Species
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-screen overflow-y-scroll sm:max-w-[600px]">
+      <DialogContent className="max-h-screen overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add Species</DialogTitle>
           <DialogDescription>
