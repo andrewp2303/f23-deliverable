@@ -4,8 +4,8 @@
 create table profiles (
   id uuid references auth.users not null primary key,
   email text unique not null,
-  display_name text,
-  biography text
+  display_name text not null,
+  biography text not null
 );
 -- Set up Row Level Security (RLS)
 -- See https://supabase.com/docs/guides/auth/row-level-security for more details.
@@ -25,9 +25,11 @@ create policy "Users can update own profile." on profiles
 -- See https://supabase.com/docs/guides/auth/managing-user-data#using-triggers for more details.
 create function public.handle_new_user()
 returns trigger as $$
+declare username text;
 begin
-  insert into public.profiles (id, email)
-  values (new.id, new.email);
+  select substring(new.email from '(.*)@') into username;
+  insert into public.profiles (id, email, display_name, biography)
+  values (new.id, new.email, username, '');
   return new;
 end;
 $$ language plpgsql security definer;

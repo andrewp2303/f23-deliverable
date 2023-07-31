@@ -57,7 +57,7 @@ export default function UserNav({ session }: { session: Session | null }) {
         <DropdownMenuGroup>
           {/* Using Next Link: https://github.com/radix-ui/primitives/issues/1105 */}
           <DropdownMenuItem asChild>
-            <Link href="/settings">
+            <Link href="/settings/profile">
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </Link>

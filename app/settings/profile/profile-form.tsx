@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { type Database } from "@/lib/schema";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { type BaseSyntheticEvent } from "react";
+import { useState, type BaseSyntheticEvent } from "react";
 
 const profileFormSchema = z.object({
   username: z
@@ -22,13 +22,9 @@ const profileFormSchema = z.object({
     .max(30, {
       message: "Username must not be longer than 30 characters.",
     }),
-  email: z.string().email().optional(), // Is there better way to handle read-only?
-  bio: z
-    .string()
-    .max(160, {
-      message: "Biography cannot be longer than 160 characters.",
-    })
-    .optional(),
+  bio: z.string().max(160, {
+    message: "Biography cannot be longer than 160 characters.",
+  }),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -36,25 +32,43 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 export default function ProfileForm({ profile }: { profile: Profile }) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const defaultValues = {
+    username: profile.display_name,
+    bio: profile.biography,
+  };
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: {
-      username: profile.display_name ?? undefined,
-      bio: profile.biography ?? undefined, // Reassigns a potential `null` value from the Supabase schema to the expected `undefined` for react-hook-form
-    },
+    defaultValues,
     mode: "onChange",
   });
 
-  const supabase = createClientComponentClient<Database>();
-
   const onSubmit = async (data: ProfileFormValues) => {
-    await supabase
+    const supabase = createClientComponentClient<Database>();
+    const { error } = await supabase
       .from("profiles")
-      .update({ biography: data.bio, display_name: data.username, email: data.email })
+      .update({ biography: data.bio, display_name: data.username })
       .eq("id", profile.id);
-    toast({
+
+    if (error) {
+      return toast({
+        title: "Something went wrong.",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+
+    setIsEditing(false);
+    return toast({
       title: "Profile updated successfully!",
     });
+  };
+
+  const handleCancel = () => {
+    form.reset(defaultValues);
+    setIsEditing(false);
   };
 
   return (
@@ -67,7 +81,7 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input readOnly={!isEditing} placeholder="Username" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a pseudonym.
@@ -91,7 +105,12 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
             <FormItem>
               <FormLabel>Bio</FormLabel>
               <FormControl>
-                <Textarea placeholder="Tell us a little bit about yourself" className="resize-none" {...field} />
+                <Textarea
+                  readOnly={!isEditing}
+                  placeholder="Tell us a little bit about yourself"
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 You can <span>@mention</span> other users and organizations to link to them.
@@ -100,7 +119,18 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
             </FormItem>
           )}
         />
-        <Button type="submit">Update profile</Button>
+        {isEditing ? (
+          <>
+            <Button type="submit" className="mr-2">
+              Update profile
+            </Button>
+            <Button variant="secondary" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+        )}
       </form>
     </Form>
   );

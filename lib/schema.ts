@@ -5,20 +5,20 @@ export interface Database {
     Tables: {
       profiles: {
         Row: {
-          biography: string | null;
-          display_name: string | null;
+          biography: string;
+          display_name: string;
           email: string;
           id: string;
         };
         Insert: {
-          biography?: string | null;
-          display_name?: string | null;
+          biography: string;
+          display_name: string;
           email: string;
           id: string;
         };
         Update: {
-          biography?: string | null;
-          display_name?: string | null;
+          biography?: string;
+          display_name?: string;
           email?: string;
           id?: string;
         };
@@ -35,36 +35,30 @@ export interface Database {
         Row: {
           author: string;
           common_name: string | null;
-          continents: Database["public"]["Enums"]["continent"][] | null;
           description: string | null;
           id: number;
           image: string | null;
           kingdom: Database["public"]["Enums"]["kingdom"];
-          oceans: Database["public"]["Enums"]["ocean"][] | null;
           scientific_name: string;
           total_population: number | null;
         };
         Insert: {
           author: string;
           common_name?: string | null;
-          continents?: Database["public"]["Enums"]["continent"][] | null;
           description?: string | null;
           id?: number;
           image?: string | null;
           kingdom: Database["public"]["Enums"]["kingdom"];
-          oceans?: Database["public"]["Enums"]["ocean"][] | null;
           scientific_name: string;
           total_population?: number | null;
         };
         Update: {
           author?: string;
           common_name?: string | null;
-          continents?: Database["public"]["Enums"]["continent"][] | null;
           description?: string | null;
           id?: number;
           image?: string | null;
           kingdom?: Database["public"]["Enums"]["kingdom"];
-          oceans?: Database["public"]["Enums"]["ocean"][] | null;
           scientific_name?: string;
           total_population?: number | null;
         };
@@ -85,9 +79,7 @@ export interface Database {
       [_ in never]: never;
     };
     Enums: {
-      continent: "North America" | "South America" | "Europe" | "Africa" | "Asia" | "Australia" | "Antarctica";
       kingdom: "Animalia" | "Plantae" | "Fungi" | "Protista" | "Archaea" | "Bacteria";
-      ocean: "Pacific" | "Atlantic" | "Indian" | "Arctic" | "Southern";
     };
     CompositeTypes: {
       [_ in never]: never;

@@ -8,12 +8,12 @@ import { redirect } from "next/navigation";
 
 const sidebarNavItems = [
   {
-    title: "Profile",
-    href: "/settings",
-  },
-  {
     title: "General",
     href: "/settings/general",
+  },
+  {
+    title: "Profile",
+    href: "/settings/profile",
   },
 ];
 
