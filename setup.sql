@@ -5,7 +5,7 @@ create table profiles (
   id uuid references auth.users not null primary key,
   email text unique not null,
   display_name text not null,
-  biography text not null
+  biography text
 );
 -- Set up Row Level Security (RLS)
 -- See https://supabase.com/docs/guides/auth/row-level-security for more details.

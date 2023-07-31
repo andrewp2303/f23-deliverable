@@ -21,10 +21,16 @@ const profileFormSchema = z.object({
     })
     .max(30, {
       message: "Username must not be longer than 30 characters.",
-    }),
-  bio: z.string().max(160, {
-    message: "Biography cannot be longer than 160 characters.",
-  }),
+    })
+    .transform((val) => val.trim()),
+  bio: z
+    .string()
+    .max(160, {
+      message: "Biography cannot be longer than 160 characters.",
+    })
+    .nullable()
+    // Transform empty string or only whitespace input to null before form submission
+    .transform((val) => (val?.trim() === "" ? null : val?.trim())),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -61,6 +67,11 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
     }
 
     setIsEditing(false);
+
+    // Reset form values to the data values that have been processed by zod.
+    // This way the user sees any whitespace trimming that has occurred during transformation
+    form.reset(data);
+
     return toast({
       title: "Profile updated successfully!",
     });
@@ -101,23 +112,28 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
         <FormField
           control={form.control}
           name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  readOnly={!isEditing}
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to link to them.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            // We must extract value from field and convert a potential defaultValue of `null` to "" because textareas can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
+            const { value, ...rest } = field;
+            return (
+              <FormItem>
+                <FormLabel>Bio</FormLabel>
+                <FormControl>
+                  <Textarea
+                    readOnly={!isEditing}
+                    value={value || ""}
+                    placeholder="Tell us a little bit about yourself"
+                    className="resize-none"
+                    {...rest}
+                  />
+                </FormControl>
+                <FormDescription>
+                  You can <span>@mention</span> other users and organizations to link to them.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         {isEditing ? (
           <>
