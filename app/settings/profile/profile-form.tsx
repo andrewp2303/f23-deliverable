@@ -69,7 +69,7 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
     setIsEditing(false);
 
     // Reset form values to the data values that have been processed by zod.
-    // This way the user sees any whitespace trimming that has occurred during transformation
+    // This way the user sees any changes that have occurred during transformation
     form.reset(data);
 
     return toast({

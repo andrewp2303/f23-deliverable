@@ -21,8 +21,36 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useState, type BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
-import { type z } from "zod";
-import { kingdoms, speciesSchema } from "../../lib/types";
+import { z } from "zod";
+
+// We use zod (z) to define a schema for the "Add species" form.
+// zod handles validation of the input values with methods like .string(), .nullable(). It also processes the form inputs with .transform() before the inputs are sent to the database.
+
+const kingdoms = z.enum(["Animalia", "Plantae", "Fungi", "Protista", "Archaea", "Bacteria"]);
+
+const speciesSchema = z.object({
+  common_name: z
+    .string()
+    .nullable()
+    // Transform empty string or only whitespace input to null before form submission
+    .transform((val) => (val?.trim() === "" ? null : val?.trim())),
+  description: z
+    .string()
+    .nullable()
+    .transform((val) => (val?.trim() === "" ? null : val?.trim())),
+  kingdom: kingdoms,
+  scientific_name: z
+    .string()
+    .trim()
+    .min(1)
+    .transform((val) => val?.trim()),
+  total_population: z.number().int().positive().min(1).optional(),
+  image: z
+    .string()
+    .url()
+    .nullable()
+    .transform((val) => val?.trim()),
+});
 
 type FormData = z.infer<typeof speciesSchema>;
 
@@ -41,6 +69,7 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
   });
 
   const onSubmit = async (input: FormData) => {
+    // The `input` prop contains data that has already been processed by zod. We can now use it in a supabase query
     const supabase = createClientComponentClient<Database>();
     const { error } = await supabase.from("species").insert([
       {
@@ -61,8 +90,14 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
         variant: "destructive",
       });
     }
+    // Reset form values to the data values that have been processed by zod.
+    // This way the user sees any changes that have occurred during transformation
+    form.reset(input);
 
     setOpen(false);
+
+    // Refresh all server components in the current route. This helps display the newly created species because species are fetched in a server component, species/page.tsx.
+    // Refreshing that server component will display the new species from Supabase
     router.refresh();
   };
 
@@ -100,15 +135,19 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
               <FormField
                 control={form.control}
                 name="common_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Common Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Guinea pig" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  // We must extract value from field and convert a potential defaultValue of `null` to "" because inputs can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
+                  const { value, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Common Name</FormLabel>
+                      <FormControl>
+                        <Input value={value || ""} placeholder="Guinea pig" {...rest} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
               <FormField
                 control={form.control}
@@ -175,18 +214,23 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
               <FormField
                 control={form.control}
                 name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="The guinea pig or domestic guinea pig, also known as the cavy or domestic cavy, is a species of rodent belonging to the genus Cavia in the family Caviidae."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  // We must extract value from field and convert a potential defaultValue of `null` to "" because textareas can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
+                  const { value, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          value={value || ""}
+                          placeholder="The guinea pig or domestic guinea pig, also known as the cavy or domestic cavy, is a species of rodent belonging to the genus Cavia in the family Caviidae."
+                          {...rest}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
               <div className="flex">
                 <Button type="submit" className="ml-1 mr-1 flex-auto">
