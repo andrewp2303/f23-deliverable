@@ -12,12 +12,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Database } from "@/lib/schema";
-import { createClientComponentClient, type Session } from "@supabase/auth-helpers-nextjs";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function UserNav({ session }: { session: Session | null }) {
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+
+export default function UserNav({ profile }: { profile: Profile }) {
   // Create Supabase client (for client components)
   const supabaseClient = createClientComponentClient<Database>();
 
@@ -28,29 +30,21 @@ export default function UserNav({ session }: { session: Session | null }) {
     router.refresh();
   };
 
-  if (!session) {
-    return (
-      <Button asChild>
-        <Link href="/login">Log in</Link>
-      </Button>
-    );
-  }
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             {/* <AvatarImage src="/avatars/01.png" alt="@shadcn" /> */}
-            <AvatarFallback>{session.user.email?.slice(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarFallback>{profile.display_name.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">User Name</p>
-            <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
+            <p className="text-sm font-medium leading-none">{profile.display_name}</p>
+            <p className="text-xs leading-none text-muted-foreground">{profile.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

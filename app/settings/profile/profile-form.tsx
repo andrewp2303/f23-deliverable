@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { type Database } from "@/lib/schema";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
 import { useState, type BaseSyntheticEvent } from "react";
 
 const profileFormSchema = z.object({
@@ -51,6 +52,8 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
     mode: "onChange",
   });
 
+  const router = useRouter();
+
   const onSubmit = async (data: ProfileFormValues) => {
     const supabase = createClientComponentClient<Database>();
     const { error } = await supabase
@@ -71,6 +74,9 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
     // Reset form values to the data values that have been processed by zod.
     // This way the user sees any changes that have occurred during transformation
     form.reset(data);
+
+    // Router.refresh does not affect ProfileForm because it is a client component, but it will refresh the initials in the user-nav in the event of a username change
+    router.refresh();
 
     return toast({
       title: "Profile updated successfully!",
